@@ -7,3 +7,8 @@
 <img width="740" height="290" alt="image" src="https://github.com/user-attachments/assets/6c0b8c3f-28dc-4608-a9f0-8861d3209922" />
 <img width="984" height="182" alt="image" src="https://github.com/user-attachments/assets/c6aa00c6-d245-43a3-be36-8f3742968b90" />
 
+
+**Reto de Geodistribución:** Como no fue posible aplicar latencia directamente, simulamos el fallo de una región apagando el Nodo 3. El sistema detectó la falta de una réplica y pasó a estado 'Under-replicated'. En esta configuración de tres nodos, la caída de uno afecta el quórum necesario para que Raft funcione normalmente. Por ello, el clúster mantuvo las tablets en alerta, priorizando la seguridad de los datos sobre el movimiento de líderes, a la espera de recuperar la conectividad con el nodo remoto.
+<img width="1502" height="604" alt="image" src="https://github.com/user-attachments/assets/a717214f-49f2-4641-8dda-ff921d480e82" />
+
+
