@@ -1,0 +1,83 @@
+Para ejecutar: ./scripts/09_quorum_particion.sh
+
+======================================
+EXPERIMENTO: QUÓRUM DURANTE PARTICIÓN
+Tradeoff: Consistencia vs Disponibilidad
+======================================
+
+📍 [PASO 1] Estado normal (3 nodos):
+              account_id              | balance 
+--------------------------------------+---------
+ 11111111-1111-1111-1111-111111111111 | 2350.00
+(1 row)
+
+
+UPDATE 1
+✅ Balance inicial = 1000
+
+📍 [PASO 2] Simulando PARTICIÓN: Deteniendo yb-node3
+yb-node3
+✅ Nodo 3 caído - AÚN hay QUÓRUM (2 de 3 nodos vivos)
+
+📍 [PASO 3] Escritura con QUORUM (2 nodos confirman):
+UPDATE 1
+✅ Escritura exitosa - Quórum alcanzado
+
+📍 [PASO 4] Lectura QUORUM (consistencia fuerte):
+              account_id              | balance 
+--------------------------------------+---------
+ 11111111-1111-1111-1111-111111111111 | 1100.00
+(1 row)
+
+
+📍 [PASO 5] ⚠️  PÉRDIDA DE QUÓRUM: Deteniendo yb-node2
+yb-node2
+❗ Solo 1 nodo vivo de 3 - NO HAY QUÓRUM
+
+📍 [PASO 6] Intento de ESCRITURA sin quórum:
+❗ TIMEOUT: Escritura bloqueada - No hay quórum
+
+📍 [PASO 7] LECTURA durante partición (sigue funcionando):
+ysqlsh: error: connection to server at "yb-node1" (172.19.0.2), port 5433 failed: server closed the connection unexpectedly
+        This probably means the server terminated abnormally
+        before or while processing the request.
+✅ Lectura exitosa - Disponibilidad parcial
+
+📍 [PASO 8] Recuperando nodos para restaurar quórum...
+yb-node2
+yb-node3
+✅ Quórum restaurado
+
+======================================
+📊 CONCLUSIONES DEL EXPERIMENTO
+======================================
+• CON QUÓRUM (2+ nodos): Escrituras y lecturas fuertes funcionan
+• SIN QUÓRUM (1 nodo):  Escrituras BLOQUEADAS (prioriza consistencia)
+• LECTURAS: Siempre disponibles (prioriza disponibilidad parcial)
+
+🔬 TRADEOFF DEMOSTRADO:
+  YugabyteDB elige CONSISTENCIA sobre DISPONIBILIDAD
+  durante particiones severas (no sacrifica consistencia)
+======================================
+
+
+Para ejecutar: ./scripts/10_quorum_latencia.sh
+
+======================================
+EXPERIMENTO: LATENCIA EN YUGABYTEDB
+======================================
+
+📍 Verificando conectividad...
+✅ Clúster conectado
+
+📊 LATENCIA DE LECTURA (10 consultas):
+   Tiempo total: 2052 ms
+   Promedio: 205 ms por consulta
+
+✏️ LATENCIA DE ESCRITURA (10 actualizaciones):
+   Tiempo total: 2407 ms
+   Promedio: 240 ms por escritura
+
+======================================
+✅ Experimento completado
+======================================
