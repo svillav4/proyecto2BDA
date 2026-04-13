@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres-command:
+    image: postgres:16
+    container_name: postgres_command
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=command_db
+    ports:
+      - "5450:5432"
+    networks:
+      - cqrs-network
+
+  postgres-query:
+    image: postgres:16
+    container_name: postgres_query
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=query_db
+    ports:
+      - "5451:5432"
+    networks:
+      - cqrs-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # Puerto para pika (Python)
+      - "15672:15672" # Panel de control (http://localhost:15672)
+    networks:
+      - cqrs-network
+
+networks:
+  cqrs-network:
+    driver: bridge

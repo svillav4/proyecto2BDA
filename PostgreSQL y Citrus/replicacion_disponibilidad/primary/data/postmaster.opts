@@ -1,0 +1,1 @@
+/usr/lib/postgresql/16/bin/postgres "-c" "wal_level=replica" "-c" "max_wal_senders=3" "-c" "wal_keep_size=128MB"

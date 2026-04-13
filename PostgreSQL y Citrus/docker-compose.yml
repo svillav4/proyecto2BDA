@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres-nodo1:
+    image: postgres:16
+    container_name: postgres_nodo1
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: bancodb
+    ports:
+      - "5432:5432"
+    command: >
+      postgres -c max_prepared_transactions=100
+               -c wal_level=logical
+    networks:
+      - bdd-network
+
+  postgres-nodo2:
+    image: postgres:16
+    container_name: postgres_nodo2
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: bancodb
+    ports:
+      - "5433:5432"
+    command: postgres -c max_prepared_transactions=100
+    networks:
+      - bdd-network
+
+  postgres-nodo3:
+    image: postgres:16
+    container_name: postgres_nodo3
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: bancodb
+    ports:
+      - "5434:5432"
+    command: postgres -c max_prepared_transactions=100
+    networks:
+      - bdd-network
+
+networks:
+  bdd-network:
+    driver: bridge
