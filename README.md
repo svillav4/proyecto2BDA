@@ -14,9 +14,9 @@ El proyecto simula una infraestructura distribuida donde clientes de varios paí
 
 ---
 
-## Despliegue y configuración en AWS
+## Ejecución y entorno
 
-A
+La ejecución del proyecto se realizó mediante Docker y Docker Compose, herramientas que facilitaron la creación de un entorno aislado y controlado. Gracias a esto, se logró simular una infraestructura de red donde coexisten múltiples servicios (bases de datos, brokers de mensajería y microservicios)
 
 ---
 
