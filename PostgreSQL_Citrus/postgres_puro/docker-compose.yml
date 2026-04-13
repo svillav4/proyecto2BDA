@@ -10,6 +10,8 @@ services:
       POSTGRES_DB: bancodb
     ports:
       - "5432:5432"
+    volumes:
+      - ./scripts-banco/init-banco.sql:/docker-entrypoint-initdb.d/init.sql
     command: >
       postgres -c max_prepared_transactions=100
                -c wal_level=logical
@@ -25,6 +27,8 @@ services:
       POSTGRES_DB: bancodb
     ports:
       - "5433:5432"
+    volumes:
+      - ./scripts-banco/init-banco.sql:/docker-entrypoint-initdb.d/init.sql
     command: postgres -c max_prepared_transactions=100
     networks:
       - bdd-network
@@ -38,6 +42,8 @@ services:
       POSTGRES_DB: bancodb
     ports:
       - "5434:5432"
+    volumes:
+      - ./scripts-banco/init-banco.sql:/docker-entrypoint-initdb.d/init.sql
     command: postgres -c max_prepared_transactions=100
     networks:
       - bdd-network
