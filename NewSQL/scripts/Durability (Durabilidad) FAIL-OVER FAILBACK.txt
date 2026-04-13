@@ -1,0 +1,74 @@
+Para ejecutar: ./scripts/00_demo_fallos.sh
+
+======================================
+DEMOSTRACIÓN DE TOLERANCIA A FALLOS
+YugabyteDB - Failover y Failback
+======================================
+
+📍 [PASO 1] Estado inicial del clúster:
+yb-node3   Up 58 minutes (healthy)
+yb-node2   Up 39 seconds (healthy)
+yb-node1   Up 58 minutes (healthy)
+
+📍 [PASO 2] Datos antes del fallo:
+ total_cuentas 
+---------------
+        200005
+(1 row)
+
+
+📍 [PASO 3] Insertando cuenta de prueba:
+INSERT 0 0
+✅ Cuenta de prueba creada
+
+📍 [PASO 4] SIMULANDO FALLO: Deteniendo yb-node2
+yb-node2
+✅ Nodo 2 detenido
+
+📍 [PASO 5] Verificando que el clúster SIGUE FUNCIONANDO:
+Consultando desde yb-node1:
+ total_cuentas | balance_total 
+---------------+---------------
+        200005 | 1098395508.76
+(1 row)
+
+
+📍 [PASO 6] Realizando operación DURANTE el fallo:
+UPDATE 1
+✅ Actualización realizada exitosamente durante el fallo
+
+📍 [PASO 7] Verificando la actualización:
+              account_id              | balance 
+--------------------------------------+---------
+ 11111111-1111-1111-1111-111111111111 | 2350.00
+(1 row)
+
+
+📍 [PASO 8] FAILBACK: Recuperando yb-node2
+yb-node2
+✅ Nodo 2 reiniciado
+Esperando sincronización (10 segundos)...
+
+📍 [PASO 9] Verificando sincronización desde yb-node2:
+              account_id              | balance 
+--------------------------------------+---------
+ 11111111-1111-1111-1111-111111111111 | 2350.00
+(1 row)
+
+
+📍 [PASO 10] Verificando cuenta de prueba creada durante el fallo:
+              account_id              | balance 
+--------------------------------------+---------
+ ffffffff-ffff-ffff-ffff-ffffffffffff | 9999.00
+(1 row)
+
+
+======================================
+✅ DEMOSTRACIÓN COMPLETADA EXITOSAMENTE
+======================================
+CONCEPTOS DEMOSTRADOS:
+• FAIL-OVER: El sistema funcionó con 2 de 3 nodos
+• DURABILIDAD: Las escrituras durante el fallo se mantuvieron
+• FAILBACK: El nodo recuperado se sincronizó automáticamente
+• CONSISTENCIA: Todos los nodos tienen los mismos datos
+======================================

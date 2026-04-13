@@ -1,0 +1,90 @@
+services:
+  yb-node1:
+    image: yugabytedb/yugabyte:latest
+    container_name: yb-node1
+    hostname: yb-node1
+    ports:
+      - "5433:5433"      # YSQL (PostgreSQL compatible)
+      - "7000:7000"      # Master UI
+      - "15433:15433"    # YB-Master UI (cluster overview)
+    volumes:
+      - ./yb_data/node1:/home/yugabyte/yb_data
+    environment:
+      - POSTGRES_USER=yugabyte
+      - POSTGRES_PASSWORD=yugabyte
+    command: >
+      bin/yugabyted start
+      --advertise_address=yb-node1
+      --base_dir=/home/yugabyte/yb_data
+      --background=false
+    networks:
+      - yb-net
+    healthcheck:
+      test: ["CMD", "bin/ysqlsh", "-h", "yb-node1", "-c", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    privileged: true
+
+  yb-node2:
+    image: yugabytedb/yugabyte:latest
+    container_name: yb-node2
+    hostname: yb-node2
+    ports:
+      - "5434:5433"      # YSQL (diferente puerto para evitar conflicto)
+    volumes:
+      - ./yb_data/node2:/home/yugabyte/yb_data
+    environment:
+      - POSTGRES_USER=yugabyte
+      - POSTGRES_PASSWORD=yugabyte
+    command: >
+      bin/yugabyted start
+      --advertise_address=yb-node2
+      --join=yb-node1
+      --base_dir=/home/yugabyte/yb_data
+      --background=false
+    depends_on:
+      yb-node1:
+        condition: service_healthy
+    networks:
+      - yb-net
+    healthcheck:
+      test: ["CMD", "bin/ysqlsh", "-h", "yb-node2", "-c", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    privileged: true
+
+  yb-node3:
+    image: yugabytedb/yugabyte:latest
+    container_name: yb-node3
+    hostname: yb-node3
+    ports:
+      - "5435:5433"      # YSQL (diferente puerto para evitar conflicto)
+    volumes:
+      - ./yb_data/node3:/home/yugabyte/yb_data
+    environment:
+      - POSTGRES_USER=yugabyte
+      - POSTGRES_PASSWORD=yugabyte
+    command: >
+      bin/yugabyted start
+      --advertise_address=yb-node3
+      --join=yb-node1
+      --base_dir=/home/yugabyte/yb_data
+      --background=false
+    depends_on:
+      yb-node1:
+        condition: service_healthy
+    networks:
+      - yb-net
+    healthcheck:
+      test: ["CMD", "bin/ysqlsh", "-h", "yb-node3", "-c", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    privileged: true
+
+networks:
+  yb-net:
+    driver: bridge
+    name: yb-lab-net
