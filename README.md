@@ -12,3 +12,27 @@
 <img width="1502" height="604" alt="image" src="https://github.com/user-attachments/assets/a717214f-49f2-4641-8dda-ff921d480e82" />
 
 
+
+Terminal 1
+<img width="1039" height="472" alt="image" src="https://github.com/user-attachments/assets/0b535849-bb62-46d6-ace9-b9846799e6c3" />
+
+
+Terminal 2
+<img width="1030" height="331" alt="image" src="https://github.com/user-attachments/assets/dac801ab-8572-497b-9a91-a32054b1c676" />
+
+
+
+| Característica | YugabyteDB (NewSQL) | PostgreSQL Tradicional |
+|----------------|---------------------|------------------------|
+| **Arquitectura** | Distribuida (Shared-Nothing) | Monolítica (Shared-Everything) |
+| **Escalabilidad** | Horizontal (agregar nodos) | Vertical (mejorar hardware) |
+| **Tolerancia a particiones (CAP)** | ✅ Sí (CP - Consistency over Availability) | ❌ No (CA - Consistency + Availability) |
+| **¿Cómo maneja el particionamiento?** | Detecta automáticamente por heartbeat (8s). Usa líder Raft que mantiene quórum (N/2+1). La subred mayoritaria sigue operando; la minoritaria bloquea escrituras pero permite lecturas stale. | No maneja particionamiento nativo. El sistema completo falla o requiere intervención manual. La replicación es asíncrona o síncrona pero sin detección automática de partición. |
+| **¿Cómo se recupera de una partición?** | Automática: re-elección de líder Raft (10-30s). Reconciliación automática por log replication. Failback automático al recuperar nodos. Pérdida de datos: CERO. | Manual: requiere intervención DBA o herramientas externas (Patroni, repmgr). Reconciliación con pg_rewind o re-sync completo. Failover manual (minutos a horas). Posible pérdida de datos si replica asíncrona. |
+| **Consistencia por defecto** | Fuerte (linealizable) | Fuerte (ACID) |
+| **Latencia con consistencia fuerte** | 20-50ms por operación (entre nodos) | <1ms por operación (misma máquina) |
+| **Disponibilidad durante fallo** | Escrituras: pueden bloquearse (si pierde quórum). Lecturas: siempre disponibles. | Completamente no disponible si el maestro falla. |
+| **Quórum mínimo** | N/2 + 1 (ej: 2 de 3 nodos) | N/A (1 nodo maestro) |
+
+
+
