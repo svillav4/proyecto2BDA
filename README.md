@@ -151,3 +151,13 @@ El sistema gestiona automáticamente la distribución, replicación, routing y f
 La distribución se basa en la clave primaria y se maneja internamente 
 
 Disminuye la complejidad operativa al delegar estas responsabilidades al sistema.
+
+
+# NewSQL 
+## Arquitectura YugabyteDB
+<img width="1220" height="1240" alt="on-premiseBDA" src="https://github.com/user-attachments/assets/82d78c62-e71a-4ce3-ba33-2c930bdc2bc6" />
+<img width="2120" height="960" alt="containerBDA" src="https://github.com/user-attachments/assets/08876d2b-a552-4917-889a-4adb04ccab5d" />
+<img width="1062" height="762" alt="tabletBDA" src="https://github.com/user-attachments/assets/1fe17698-ef93-4edd-913d-2b1d87d5aaf3" />
+
+
+
